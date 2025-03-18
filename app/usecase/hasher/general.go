@@ -19,9 +19,8 @@ func New(log *logger.Logger) *UseCase {
 
 var _ HasherUC = (*UseCase)(nil)
 
-// HashPhoneNumber принимает номер телефона (строка из 12 символов),
-// соль и домен, и возвращает "хэш" номера телефона.
-func (uc *UseCase) HashPhoneNumber(hashes []entity.Hash, domain string) ([]string, error) {
+// HashPhoneNumber принимает структуру []entity.Hash и возвращает слайс "хэшей" номера телефона.
+func (uc *UseCase) HashPhoneNumber(hashes []entity.PhoneNumber, domain string) ([]string, error) {
 	domainInt, err := strconv.ParseInt(domain, 10, 64)
 	if err != nil {
 		uc.log.Info("Error parsing domain while hashing: " + err.Error())
@@ -45,8 +44,8 @@ func (uc *UseCase) HashPhoneNumber(hashes []entity.Hash, domain string) ([]strin
 	return hashedData, nil
 }
 
-// UnhashPhoneNumber принимает хэш, соль и домен,
-// выполняет обратную операцию XOR и возвращает исходный номер телефона.
+// UnhashPhoneNumber принимает структуру []entity.Hash,
+// выполняет обратную операцию XOR и возвращает слайс исходных номеров телефонов.
 func (uc *UseCase) UnhashPhoneNumber(hashes []entity.Hash, domain string) ([]string, error) {
 
 	domainInt, err := strconv.ParseInt(domain, 10, 64)
