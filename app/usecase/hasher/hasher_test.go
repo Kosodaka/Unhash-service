@@ -9,6 +9,7 @@ import (
 type testCase struct {
 	name        string
 	inputHash   []entity.Hash
+	inputNumber []entity.PhoneNumber
 	inputDomain string
 	expected    []string
 	expectError bool
@@ -20,7 +21,7 @@ func TestHashPhoneNumber(t *testing.T) {
 	tests := []testCase{
 		{
 			name: "valid hash",
-			inputHash: []entity.Hash{
+			inputNumber: []entity.PhoneNumber{
 				{PhoneNumber: "123456789012", Salt: 42},
 			},
 			inputDomain: "1",
@@ -49,7 +50,7 @@ func TestHashPhoneNumber(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := uc.HashPhoneNumber(tc.inputHash, tc.inputDomain)
+			result, err := uc.HashPhoneNumber(tc.inputNumber, tc.inputDomain)
 
 			if (err != nil) != tc.expectError {
 				t.Errorf("unexpected error status: got %v, want %v", err != nil, tc.expectError)
