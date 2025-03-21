@@ -2,7 +2,6 @@ package v1
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"unhashService/app/usecase/hasher"
@@ -41,7 +40,6 @@ func (hc *HashController) HashPhoneNumber(w http.ResponseWriter, r *http.Request
 
 	var req HashRequest
 	err = json.Unmarshal(body, &req)
-	fmt.Println("req", req)
 	if err != nil {
 		makeInternalServerError(w, err)
 		hc.logger.Error(err.Error())
@@ -49,7 +47,6 @@ func (hc *HashController) HashPhoneNumber(w http.ResponseWriter, r *http.Request
 	}
 
 	phones, err := hc.uc.HashPhoneNumber(req.Hash, req.Domain)
-	fmt.Println("phones: ", phones)
 	if err != nil {
 		makeBadRequestError(w, err)
 		hc.logger.Error(err.Error())
@@ -57,7 +54,6 @@ func (hc *HashController) HashPhoneNumber(w http.ResponseWriter, r *http.Request
 	}
 	response := HashResponse{Hashes: phones}
 	jsonedResp, err := json.Marshal(response)
-	fmt.Println("jsonedResp: ", string(jsonedResp))
 	if err != nil {
 		makeInternalServerError(w, err)
 		hc.logger.Error(err.Error())

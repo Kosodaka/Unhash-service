@@ -1,8 +1,8 @@
 package entity
 
 type PhoneNumber struct {
-	Domain int64
-	Hash   []Hash
+	Salt        int64  `json:"salt"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 type Hash struct {

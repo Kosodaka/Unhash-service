@@ -5,11 +5,10 @@ import (
 )
 
 type HasherUC interface {
-	// HashPhoneNumber принимает номер телефона (строка из 12 символов),
-	// соль и домен, и возвращает "хэш" номера телефона.
-	HashPhoneNumber(hash []entity.Hash, domain string) ([]string, error)
+	// HashPhoneNumber принимает структуру []entity.Hash и возвращает слайс "хэшей" номера телефона.
+	HashPhoneNumber(hash []entity.PhoneNumber, domain string) ([]string, error)
 
-	// UnhashPhoneNumber принимает хэш, соль и домен,
-	// выполняет обратную операцию XOR и возвращает исходный номер телефона.
+	// UnhashPhoneNumber принимает структуру []entity.Hash,
+	// выполняет обратную операцию XOR и возвращает слайс исходных номеров телефонов.
 	UnhashPhoneNumber(hash []entity.Hash, domain string) ([]string, error)
 }
