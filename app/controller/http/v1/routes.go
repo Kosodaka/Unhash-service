@@ -95,7 +95,7 @@ func (hc *HashController) UnhashPhoneNumber(w http.ResponseWriter, r *http.Reque
 		hc.logger.Error(err.Error())
 		return
 	}
-	response := UnhashResponse{PhoneNumbers: phones}
+	response := UnhashResponse{Hash: phones}
 	jsonedResp, err := json.Marshal(response)
 	if err != nil {
 		makeInternalServerError(w, err)

@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"strconv"
 	"unhashService/entity"
 	"unhashService/pkg/logger"
 )
@@ -38,13 +37,8 @@ func prepareDataForHashing(phoneNumber, secret string) string {
 }
 
 // HashPhoneNumber принимает структуру []entity.Hash и возвращает слайс "хэшей" номера телефона.
-func (uc *UseCase) HashPhoneNumber(hashes []entity.PhoneNumber, domain string) ([]string, error) {
+func (uc *UseCase) HashPhoneNumber(hashes []entity.PhoneNumber, domain int64) ([]string, error) {
 
-	domainInt, err := strconv.ParseInt(domain, 10, 64)
-	if err != nil {
-		uc.log.Info("Error parsing domain while hashing: " + err.Error())
-		return nil, err
-	}
 	hashedData := make([]string, 0, len(hashes))
 
 	for _, h := range hashes {
@@ -53,7 +47,7 @@ func (uc *UseCase) HashPhoneNumber(hashes []entity.PhoneNumber, domain string) (
 
 		hashedBytes := make([]byte, len(hashBytes))
 		for i, b := range hashBytes {
-			hashedBytes[i] = b ^ byte(h.Salt) ^ byte(domainInt)
+			hashedBytes[i] = b ^ byte(h.Salt) ^ byte(domain)
 		}
 
 		hashedHex := hex.EncodeToString(hashedBytes)
@@ -66,16 +60,9 @@ func (uc *UseCase) HashPhoneNumber(hashes []entity.PhoneNumber, domain string) (
 
 // UnhashPhoneNumber принимает структуру []entity.Hash,
 // выполняет обратную операцию XOR и возвращает слайс исходных номеров телефонов.
-func (uc *UseCase) UnhashPhoneNumber(hashes []entity.Hash, domain string) ([]string, error) {
+func (uc *UseCase) UnhashPhoneNumber(hashes []entity.Hash, domain int64) ([]entity.UserHash, error) {
 
-	domainInt, err := strconv.ParseInt(domain, 10, 64)
-	if err != nil {
-		uc.log.Info("error parsing domain while unhashing: " + err.Error())
-		return nil, err
-	}
-
-	unhashedData := make([]string, 0, len(hashes))
-
+	var unhashedData []entity.UserHash
 	for _, h := range hashes {
 		hashedBytes, err := hex.DecodeString(h.PhoneNumber)
 		if err != nil {
@@ -85,10 +72,14 @@ func (uc *UseCase) UnhashPhoneNumber(hashes []entity.Hash, domain string) ([]str
 
 		hashBytes := make([]byte, len(hashedBytes))
 		for i, b := range hashedBytes {
-			hashBytes[i] = b ^ byte(h.Salt) ^ byte(domainInt)
+			hashBytes[i] = b ^ byte(h.Salt) ^ byte(domain)
 		}
 
-		unhashedData = append(unhashedData, string(hashBytes))
+		unhashedData = append(unhashedData, entity.UserHash{
+			UserID: h.UserID,
+			Hashes: string(hashBytes),
+		})
+
 	}
 
 	return unhashedData, nil
