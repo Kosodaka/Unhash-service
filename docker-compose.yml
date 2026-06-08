@@ -9,9 +9,6 @@ services:
       - .env
     networks:
       - backend
-    environment:
-      HTTP_PORT: ${HTTP_PORT}
-      HTTP_HOST: ${HTTP_HOST}
     ports:
       - "8080:8080"
 

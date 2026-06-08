@@ -35,8 +35,9 @@ func makeAnyError(w http.ResponseWriter, err error, statusCode http.ConnState) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(internalServerError))
 	} else {
-		w.Write(jsonedBody)
 		w.WriteHeader(int(statusCode))
+		w.Write(jsonedBody)
+
 	}
 }
 

@@ -4,6 +4,7 @@ import "github.com/ilyakaznacheev/cleanenv"
 
 type Config struct {
 	HTTP
+	HashConf
 }
 
 type HTTP struct {
@@ -17,6 +18,14 @@ func (c *Config) GetHTTPPort() string {
 
 func (c *Config) GetHTTPHost() string {
 	return c.HTTP.Host
+}
+
+type HashConf struct {
+	HMACSecret string `env:"HMAC_SECRET" envDefault:"-"`
+}
+
+func (c *Config) GetHMACSecret() string {
+	return c.HashConf.HMACSecret
 }
 
 func NewConfig(cgfPath string) (*Config, error) {

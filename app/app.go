@@ -15,8 +15,8 @@ type App struct {
 
 func New(cfg *entity.Config) (*App, error) {
 	lg := logger.NewConsoleLogger(logger.DebugLevel)
-
-	usecase := hasher.New(lg)
+	secret := cfg.GetHMACSecret()
+	usecase := hasher.New(lg, secret)
 
 	web := v1.NewHashController(usecase, lg)
 
